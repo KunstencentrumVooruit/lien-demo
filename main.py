@@ -1,6 +1,11 @@
 import json
 import gspread
+import apikey
 from oauth2client.client import SignedJwtAssertionCredentials
+from yesplanAPIQuery2 import yesplanAPIQuery2
+import locale
+import datetime
+
 
 def getDate(delta):
   today = datetime.date.today() + datetime.timedelta(days=delta)
@@ -16,11 +21,39 @@ class googleSheet():
     self.wks = self.gc.open(sheetName)
 
 
+def getActivity(query):
+  data = query.get_data("/event/5692949505-1416475956")
+
+  naam = data['name']
+
+  return naam
+
+
+def exportToSheet(query, worksheet, naam):
+
+  worksheet.update_cell(1, 2, naam)
+
 
 def main():
-
   gSheet = googleSheet('test')
+
+  query = yesplanAPIQuery2()
+
   worksheet = gSheet.wks.get_worksheet(0)
-  worksheet.update_acell('B2', "hallo")
+
+  cell_list = worksheet.range('A4:B30')
+  for cell in cell_list:
+    cell.value=''
+
+  worksheet.update_cells(cell_list)
+  naam = getActivity(query)
+  exportToSheet(query, worksheet, naam)
+
+
+
+
+
 
 main()
+
+
