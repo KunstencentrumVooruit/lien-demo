@@ -5,7 +5,8 @@ from oauth2client.client import SignedJwtAssertionCredentials
 from yesplanAPIQuery2 import yesplanAPIQuery2
 import locale
 import datetime
-
+import datetime
+from dateutil import parser
 
 def getDate(delta):
   today = datetime.date.today() + datetime.timedelta(days=delta)
@@ -22,16 +23,52 @@ class googleSheet():
 
 
 def getActivity(query):
-  data = query.get_data("/event/5692949505-1416475956")
+  # data = query.get_data("/event/5692949505-1416475956")
+  data = query.get_data("/events/name%3Ademo")
 
-  naam = data['name']
+  #CONCERTZAAL
+  #BALZAAL
+  #THEATERZAAL
 
-  return naam
+  i=0
+
+  # voorstellingen = []
+  # wut = []
+  samen = []
+
+  for w in data["data"]:
+    id=data["data"][i]["id"]
+    lokatie = data['data'][i]['locations'][0]['name']
+    aanvangsuur = data['data'][i]['starttime']
+
+    # aanvangsuurr = datetime.strptime(aanvangsuur, '%Y-%m-%dT%H:%M:%S.%fZ')
+    aanvangsuurr = parser.parse(aanvangsuur)
 
 
-def exportToSheet(query, worksheet, naam):
 
-  worksheet.update_cell(1, 2, naam)
+    # aanvangsuur=data["data"][i]["defaultschedulestarttime"]
+
+    samen.append(lokatie)
+    if aanvangsuur > date.today()-datetime.timedelta(days=7):
+      samen.append(aanvangsuurr)
+
+    # wut.append(aanvangsuur)
+    i=i+1
+
+  return samen
+
+
+def exportToSheet(query, worksheet, samen):
+
+  # worksheet.update_cell(5, 5, naam)
+  teller = 0
+
+  for sam in samen:
+    print sam
+    # print wut
+    # worksheet.update_cell(1, teller, voorstelling[teller])
+
+  teller = teller + 1
 
 
 def main():
