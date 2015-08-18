@@ -1,9 +1,6 @@
 import json
 import gspread
-import datetime
 from oauth2client.client import SignedJwtAssertionCredentials
-from yesplanAPIQuery import yesplanAPIQuery
-import locale
 
 def getDate(delta):
   today = datetime.date.today() + datetime.timedelta(days=delta)
@@ -18,3 +15,12 @@ class googleSheet():
     self.gc = gspread.authorize(self.credentials)
     self.wks = self.gc.open(sheetName)
 
+
+
+def main():
+
+  gSheet = googleSheet('test')
+  worksheet = gSheet.wks.get_worksheet(0)
+  worksheet.update_acell('B2', "hallo")
+
+main()
